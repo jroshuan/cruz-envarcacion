@@ -1,0 +1,83 @@
+#include <iostream>
+#include <string>
+
+struct Pasajero {
+    std::string primer_nombre;
+    int numero_documento;
+    int destino;
+    Pasajero* siguiente;
+};
+
+Pasajero* crearPasajero(const std::string& nombre, int numero_documento, int destino) {
+    Pasajero* nuevoPasajero = new Pasajero;
+    nuevoPasajero->primer_nombre = nombre;
+    nuevoPasajero->numero_documento = numero_documento;
+    nuevoPasajero->destino = destino;
+    nuevoPasajero->siguiente = nullptr;
+    return nuevoPasajero;
+}
+
+void insertarPasajero(Pasajero*& cabeza, Pasajero* nuevoPasajero) {
+    Pasajero* aux = cabeza;
+    Pasajero* aux2 = nullptr;
+
+    if (cabeza == nullptr || nuevoPasajero->numero_documento < aux->numero_documento) {
+        nuevoPasajero->siguiente = cabeza;
+        cabeza = nuevoPasajero;
+    } else {
+        while (aux != nullptr && nuevoPasajero->numero_documento > aux->numero_documento) {
+            aux2 = aux;
+            aux = aux->siguiente;
+        }
+        nuevoPasajero->siguiente = aux;
+        aux2->siguiente = nuevoPasajero;
+    }
+}
+
+void imprimirLista(Pasajero* cabeza) {
+    Pasajero* aux = cabeza;
+    while (aux != nullptr) {
+        std::cout << "Nombre: " << aux->primer_nombre 
+                  << ", Documento: " << aux->numero_documento 
+                  << ", Destino: " << aux->destino << std::endl;
+        aux = aux->siguiente;
+    }
+}
+
+void liberarMemoria(Pasajero*& cabeza) {
+    Pasajero* aux;
+    while (cabeza != nullptr) {
+        aux = cabeza;
+        cabeza = cabeza->siguiente;
+        delete aux;
+    }
+}
+
+int main() {
+    Pasajero* listaBocana = nullptr;
+    Pasajero* listaPianguita = nullptr;
+    Pasajero* listaLadrillero = nullptr;
+
+    Pasajero* p1 = crearPasajero("Juan", 123456, 1);
+    Pasajero* p2 = crearPasajero("Maria", 654321, 2);
+    Pasajero* p3 = crearPasajero("Pedro", 111222, 3);
+
+    insertarPasajero(listaBocana, p1);
+    insertarPasajero(listaPianguita, p2);
+    insertarPasajero(listaLadrillero, p3);
+
+    std::cout << "Lista de pasajeros con destino a La Bocana:" << std::endl;
+    imprimirLista(listaBocana);
+
+    std::cout << "Lista de pasajeros con destino a Pianguita:" << std::endl;
+    imprimirLista(listaPianguita);
+
+    std::cout << "Lista de pasajeros con destino a Ladrillero:" << std::endl;
+    imprimirLista(listaLadrillero);
+
+    liberarMemoria(listaBocana);
+    liberarMemoria(listaPianguita);
+    liberarMemoria(listaLadrillero);
+
+    return 0;
+}
